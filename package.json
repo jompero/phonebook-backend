@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "watch": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:ui": "rm -rf build && cd ../paths/fullstackopen2019-submissions/part3/phonebook && npm run build --prod && cp -r build ../../../../phonebook-backend/build",
+    "deploy": "git push heroku master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",    
+    "logs:prod": "heroku logs --tail"
   },
   "dependencies": {
     "cors": "^2.8.5",

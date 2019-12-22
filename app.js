@@ -16,6 +16,7 @@ logger.token('body', (req) => {
   return '';
 });
 
+app.use(express.static('build'));
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
