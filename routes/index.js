@@ -1,10 +1,15 @@
 const express = require('express');
+const Person = require('../services/person');
 
 const router = express.Router();
 
-/* GET home page. */
 router.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.redirect('/info');
+});
+
+router.get('/info', (req, res) => {
+  res.send(`<div>Phonebook has info for ${Person.getPersons().length} people</div>`
+  + `<div>${Date()}</div>`);
 });
 
 module.exports = router;
