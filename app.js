@@ -1,9 +1,9 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cors = require('cors');
-require('./config/mongoose');
 
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
@@ -17,8 +17,8 @@ logger.token('body', (req) => {
   return '';
 });
 
-app.use(express.static('build'));
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'));
+app.use(express.static('build'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,14 +33,17 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
+  const error = err;
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.message = error.message;
+  res.locals.error = req.app.get('env') === 'development' ? error : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  if (error.name === 'ValidationError') error.status = 400;
+
+  // res the error page
+  res.status(error.status || 500);
+  res.json(error);
 });
 
 module.exports = app;

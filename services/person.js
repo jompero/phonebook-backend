@@ -1,41 +1,34 @@
-const Person = {};
+const Person = require('../models/person');
 
-let persons = [
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2,
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3,
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4,
-  },
-  {
-    name: 'Vieras Tieras',
-    number: '234-345-567',
-    id: 10,
-  },
-];
-
-Person.getPersons = () => persons;
-
-Person.getPerson = (id) => persons.find((person) => person.id === id);
-
-Person.deletePerson = (id) => {
-  persons = persons.filter((person) => person.id !== id);
+exports.getPersons = () => {
+  console.log('Fetching phonebook');
+  return Person.find({}).then((result) => result);
 };
 
-Person.addPerson = (person) => {
-  persons = persons.concat(person);
-  return person;
+exports.findById = (id) => Person.findById(id)
+  .then((person) => person);
+
+exports.deletePerson = (id) => {
+  console.log(`Deleting ${id}`);
+  return Person.findByIdAndDelete(id);
 };
 
-Person.findByName = (name) => persons.filter((person) => person.name === name);
+exports.addPerson = (person) => {
+  const newPerson = new Person(person);
+  return newPerson.save()
+    .then((result) => result)
+    .catch((error) => error);
+};
 
-module.exports = Person;
+exports.savePerson = (person) => {
+  const personToSave = new Person(person);
+  return personToSave.save()
+    .then((savedPerson) => savedPerson);
+};
+
+exports.updatePerson = (person) => {
+  return Person.findByIdAndUpdate(person.id, { number: person.number })
+    .then((updatedPerson) => updatedPerson);
+};
+
+exports.findByName = (name) => Person.find({ name }).then((person) => person);
