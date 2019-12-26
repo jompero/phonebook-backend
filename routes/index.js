@@ -3,13 +3,13 @@ const Person = require('../services/person');
 
 const router = express.Router();
 
-// router.get('/', (req, res) => {
-//   res.redirect('/info');
-// });
-
-router.get('/info', (req, res) => {
-  res.send(`<div>Phonebook has info for ${Person.getPersons().length} people</div>`
-  + `<div>${Date()}</div>`);
+router.get('/info', (req, res, next) => {
+  Person.getPersons()
+    .then((persons) => {
+      res.send(`<div>Phonebook has info for ${persons.length} people</div>`
+      + `<div>${Date()}</div>`);
+    })
+    .catch((error) => next(error));
 });
 
 module.exports = router;
